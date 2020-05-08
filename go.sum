@@ -124,8 +124,8 @@ github.com/ysmood/leakless v0.3.0 h1:E1dUzwtusokAht2LgrtAZoAioKA9HRpIkkk19PygigQ
 github.com/ysmood/leakless v0.3.0/go.mod h1:gFvP1jOJ4cVzsdXO7AX/+L/VittcZysvG6QyOw0FBqY=
 github.com/ysmood/lookpath v1.1.0 h1:heliJRj3thM8qw7236g5qDeI+vKELGndm+SWzwjxHqI=
 github.com/ysmood/lookpath v1.1.0/go.mod h1:QQh4rXcDdYAacpl7Q8cgZqkf+NRMJ4wc+lpQp0FgW+0=
-github.com/ysmood/rod v0.25.4 h1:EAqYhiusY/jtrH8zMTfnMx21f7wWzT/bMAURsdLyuAg=
-github.com/ysmood/rod v0.25.4/go.mod h1:IT2cWYRje4FKv2fAkjiJXbg2IJT9HNZwH0NXlHYPTRY=
+github.com/ysmood/rod v0.28.0 h1:uE6xwrhbCcZWzinEpr+zv7U4DIz5Gj0EuMeq16072TE=
+github.com/ysmood/rod v0.28.0/go.mod h1:IT2cWYRje4FKv2fAkjiJXbg2IJT9HNZwH0NXlHYPTRY=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550/go.mod h1:yigFU9vqHzYiE8UmvKecakEJjdnWj3jj499lnFckfCI=

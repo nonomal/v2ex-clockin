@@ -38,7 +38,9 @@ func clockIn() {
 	browser := newBrowser(true)
 	defer browser.Close()
 
-	page := browser.Page("https://www.v2ex.com/mission/daily").WaitLoad()
+	page := browser.Page("https://www.v2ex.com/mission/daily")
+
+	kit.Sleep(5)
 
 	if !page.Has("[value='领取 X 铜币']") {
 		return
@@ -47,6 +49,8 @@ func clockIn() {
 	wait := page.WaitRequestIdle()
 	page.Element("[value='领取 X 铜币']").Click()
 	wait()
+
+	page.Screenshot("")
 }
 
 func newBrowser(headless bool) *rod.Browser {
