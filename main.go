@@ -41,6 +41,7 @@ func clockIn() {
 	page := browser.Page("https://www.v2ex.com/mission/daily")
 
 	for {
+		// 这里不可以太快，否则会触发 v2ex 的反爬虫机制
 		kit.Sleep(5)
 
 		if !page.Has("[value='领取 X 铜币']") {
