@@ -5,5 +5,5 @@ go 1.14
 require (
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/ysmood/kit v0.22.2
-	github.com/ysmood/rod v0.28.0
+	github.com/ysmood/rod v0.29.1
 )

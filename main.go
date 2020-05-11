@@ -40,17 +40,19 @@ func clockIn() {
 
 	page := browser.Page("https://www.v2ex.com/mission/daily")
 
-	kit.Sleep(5)
+	for {
+		kit.Sleep(5)
 
-	if !page.Has("[value='领取 X 铜币']") {
-		return
+		if !page.Has("[value='领取 X 铜币']") {
+			return
+		}
+
+		wait := page.WaitRequestIdle()
+		page.Element("[value='领取 X 铜币']").Click()
+		wait()
+
+		page.Screenshot("")
 	}
-
-	wait := page.WaitRequestIdle()
-	page.Element("[value='领取 X 铜币']").Click()
-	wait()
-
-	page.Screenshot("")
 }
 
 func newBrowser(headless bool) *rod.Browser {
