@@ -61,6 +61,6 @@ func clockIn() {
 }
 
 func newBrowser(headless bool) *rod.Browser {
-	url := launcher.New().Headless(headless).UserDataDir("tmp").Launch()
+	url := launcher.New().Headless(headless).UserDataDir("tmp/user").Launch()
 	return rod.New().ControlURL(url).Connect()
 }
