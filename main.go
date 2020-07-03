@@ -22,9 +22,11 @@ func main() {
 
 	if *topic != "" {
 		go func() {
-			h := time.Now().In(locChina).Hour()
-			for 9 < h && h < 24 {
-				stickyTopic()
+			for {
+				h := hour()
+				if 9 < h && h < 24 {
+					stickyTopic()
+				}
 				time.Sleep(*interval)
 			}
 		}()
@@ -55,13 +57,8 @@ func stickyTopic() {
 	page := browser.Page(*topic)
 	page.Element(".box")
 
-	if !page.HasMatches(".box .fr a", "置顶") {
-		kit.Log("无需重复置顶", *topic)
-		return
-	}
-
 	wait := page.HandleDialog(true, "")
-	go page.ElementMatches(".box .fr a", "置顶").Click()
+	go page.ElementMatches(".box .fr a", "置顶 10 分钟").Click()
 	wait()
 
 	page.WaitRequestIdle()()
@@ -117,4 +114,8 @@ func login() {
 func newBrowser(headless bool) *rod.Browser {
 	url := launcher.New().Headless(headless).UserDataDir("tmp/user").Launch()
 	return rod.New().ControlURL(url).Trace(true).Connect()
+}
+
+func hour() int {
+	return time.Now().In(locChina).Hour()
 }

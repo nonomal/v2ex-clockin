@@ -11,7 +11,7 @@ curl -L https://git.io/fjaxx | repo=go-rod/v2ex-example sh
 
 v2ex-example # 不传任何配置就是每天中午自动签到
 
-v2ex-example -topic https://www.v2ex.com/t/686655 # 每隔 10 分钟点击一次置顶主题
+v2ex-example -topic https://www.v2ex.com/t/686655 -interval 1h # 每隔 1 小时点击一次置顶主题
 
 v2ex-example -help # 查看更多设置
 ```
