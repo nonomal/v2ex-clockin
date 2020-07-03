@@ -3,13 +3,17 @@ package main
 import (
 	"context"
 
+	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/launcher"
 	"github.com/robfig/cron/v3"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod"
-	"github.com/ysmood/rod/lib/launcher"
 )
 
 func main() {
+	if !isLoggedIn() {
+		login()
+	}
+
 	scheduler := cron.New()
 	kit.E(scheduler.AddFunc("0 12 * * *", func() {
 		if !isLoggedIn() {

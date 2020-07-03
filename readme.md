@@ -1,6 +1,6 @@
 # v2ex-clockin
 
-这是一个演示如何使用 [rod](https://github.com/ysmood/rod) 的项目，全部代码只有约 50 行。
+这是一个演示如何使用 [rod](https://github.com/go-rod/rod) 的项目，全部代码只有约 50 行。
 
 ## 安装运行
 
