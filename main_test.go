@@ -2,6 +2,10 @@ package main
 
 import "testing"
 
-func Test(t *testing.T) {
+func TestClockIn(t *testing.T) {
 	clockIn()
+}
+
+func TestStickyTopic(t *testing.T) {
+	stickyTopic()
 }

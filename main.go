@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"sync"
 	"time"
 
 	"github.com/go-rod/rod"
@@ -9,20 +11,71 @@ import (
 	"github.com/ysmood/kit"
 )
 
-func main() {
-	clockIn()
+var clockInConf = flag.String("clockin", "0 12 * * *", "cron 语法的定时签到")
+var topic = flag.String("topic", "", "要自动定时置顶的主题的 url，深夜不会触发 (10:00 - 24:00)")
+var interval = flag.Duration("interval", 15*time.Minute, "自动点击置顶主题的间隔")
+var locChina, _ = time.LoadLocation("Asia/Shanghai")
+var lock = &sync.Mutex{}
 
-	scheduler := cron.New()
-	kit.E(scheduler.AddFunc("0 12 * * *", func() {
+func main() {
+	flag.Parse()
+
+	if *topic != "" {
+		go func() {
+			h := time.Now().In(locChina).Hour()
+			for 9 < h && h < 24 {
+				stickyTopic()
+				time.Sleep(*interval)
+			}
+		}()
+	}
+
+	if *clockInConf != "" {
 		clockIn()
-	}))
-	scheduler.Run()
+
+		scheduler := cron.New()
+		kit.E(scheduler.AddFunc(*clockInConf, func() {
+			clockIn()
+		}))
+		scheduler.Run()
+	}
+}
+
+func stickyTopic() {
+	if !isLoggedIn() {
+		login()
+	}
+
+	lock.Lock()
+	defer lock.Unlock()
+
+	browser := newBrowser(true).Timeout(30 * time.Second)
+	defer browser.Close()
+
+	page := browser.Page(*topic)
+	page.Element(".box")
+
+	if !page.HasMatches(".box .fr a", "置顶") {
+		kit.Log("无需重复置顶", *topic)
+		return
+	}
+
+	wait := page.HandleDialog(true, "")
+	go page.ElementMatches(".box .fr a", "置顶").Click()
+	wait()
+
+	page.WaitRequestIdle()()
+
+	kit.Log("置顶了", *topic)
 }
 
 func clockIn() {
 	if !isLoggedIn() {
 		login()
 	}
+
+	lock.Lock()
+	defer lock.Unlock()
 
 	browser := newBrowser(true)
 	defer browser.Close()
@@ -42,20 +95,26 @@ func clockIn() {
 }
 
 func isLoggedIn() bool {
+	lock.Lock()
+	defer lock.Unlock()
+
 	browser := newBrowser(true)
 	defer browser.Close()
 
-	return browser.Page("https://www.v2ex.com/signin").WaitLoad().HasMatches("a", "登出")
+	return browser.Page("https://www.v2ex.com/signin").WaitLoad().HasMatches("a", "登出|Sign Out")
 }
 
 func login() {
+	lock.Lock()
+	defer lock.Unlock()
+
 	browser := newBrowser(false)
 	defer browser.Close()
 
-	browser.Page("https://www.v2ex.com/signin").ElementMatches("a", "登出")
+	browser.Page("https://www.v2ex.com/signin").ElementMatches("a", "登出|Sign Out")
 }
 
 func newBrowser(headless bool) *rod.Browser {
 	url := launcher.New().Headless(headless).UserDataDir("tmp/user").Launch()
-	return rod.New().ControlURL(url).Connect()
+	return rod.New().ControlURL(url).Trace(true).Connect()
 }

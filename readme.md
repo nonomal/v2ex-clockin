@@ -1,18 +1,22 @@
-# v2ex-clockin
+# v2ex-example
 
-这是一个演示如何使用 [rod](https://github.com/go-rod/rod) 的项目，全部代码只有约 50 行。
+这是一个演示如何使用 [rod](https://github.com/go-rod/rod) 的项目。整个项目仅一个 `main.go` 文件。
 
 ## 安装运行
 
 除了一个可执行文件无需任何依赖，可以脚本下载运行：
 
 ```bash
-curl -L https://git.io/fjaxx | repo=ysmood/v2ex-clockin sh
+curl -L https://git.io/fjaxx | repo=go-rod/v2ex-example sh
 
-v2ex-clockin
+v2ex-example # 不传任何配置就是每天中午自动签到
+
+v2ex-example -topic https://www.v2ex.com/t/686655 # 每隔 10 分钟点击一次置顶主题
+
+v2ex-example -help # 查看更多设置
 ```
 
-或者去[发布页面](https://github.com/ysmood/v2ex-clockin/releases)下载对应 OS 的可执行文件，
+或者去[发布页面](https://github.com/go-rod/v2ex-example/releases)下载对应 OS 的可执行文件，
 
 或者 `go run .` 运行源代码。
 
