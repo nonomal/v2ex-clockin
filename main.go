@@ -1,7 +1,7 @@
 package main
 
 import (
-	"context"
+	"time"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
@@ -10,20 +10,35 @@ import (
 )
 
 func main() {
+	clockIn()
+
+	scheduler := cron.New()
+	kit.E(scheduler.AddFunc("0 12 * * *", func() {
+		clockIn()
+	}))
+	scheduler.Run()
+}
+
+func clockIn() {
 	if !isLoggedIn() {
 		login()
 	}
 
-	scheduler := cron.New()
-	kit.E(scheduler.AddFunc("0 12 * * *", func() {
-		if !isLoggedIn() {
-			login()
-		}
-		clockIn()
+	browser := newBrowser(true)
+	defer browser.Close()
 
-		kit.Log("clocked in")
-	}))
-	scheduler.Run()
+	page := browser.Page("https://www.v2ex.com/mission/daily")
+
+	err := kit.Try(func() {
+		wait := page.WaitRequestIdle()
+		page.Timeout(10 * time.Second).Element("[value='领取 X 铜币']").Click()
+		wait()
+	})
+	if err != nil {
+		kit.Log("已经签过到了")
+	} else {
+		kit.Log("签到成功")
+	}
 }
 
 func isLoggedIn() bool {
@@ -38,30 +53,6 @@ func login() {
 	defer browser.Close()
 
 	browser.Page("https://www.v2ex.com/signin").ElementMatches("a", "登出")
-}
-
-func clockIn() {
-	browser := newBrowser(true)
-	defer browser.Close()
-
-	kit.Retry(context.Background(), kit.CountSleeper(10), func() (bool, error) {
-		page := browser.Page("https://www.v2ex.com/mission/daily")
-		defer page.Close()
-
-		// 这里不可以太快，否则会触发 v2ex 的反爬虫机制
-		kit.Sleep(5)
-
-		if !page.Has("[value='领取 X 铜币']") {
-			return true, nil
-		}
-
-		wait := page.WaitRequestIdle()
-		page.Element("[value='领取 X 铜币']").Click()
-		wait()
-
-		page.Screenshot("")
-		return false, nil
-	})
 }
 
 func newBrowser(headless bool) *rod.Browser {
