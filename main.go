@@ -77,11 +77,11 @@ func clockIn() {
 	browser := newBrowser(true)
 	defer browser.Close()
 
-	page := browser.Page("https://www.v2ex.com/mission/daily")
+	page := browser.Timeout(30 * time.Second).Page("https://www.v2ex.com/mission/daily")
 
 	err := kit.Try(func() {
 		wait := page.WaitRequestIdle()
-		page.Timeout(10 * time.Second).Element("[value='领取 X 铜币']").Click()
+		page.Element("[value='领取 X 铜币']").Click()
 		wait()
 	})
 	if err != nil {
