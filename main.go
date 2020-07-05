@@ -77,7 +77,7 @@ func clockIn() {
 	browser := newBrowser(true)
 	defer browser.Close()
 
-	page := browser.Timeout(30 * time.Second).Page("https://www.v2ex.com/mission/daily")
+	page := browser.Timeout(time.Minute).Page("https://www.v2ex.com/mission/daily")
 
 	err := kit.Try(func() {
 		wait := page.WaitRequestIdle()
@@ -113,7 +113,7 @@ func login() {
 
 func newBrowser(headless bool) *rod.Browser {
 	url := launcher.New().Headless(headless).UserDataDir("tmp/user").Launch()
-	return rod.New().ControlURL(url).Trace(true).Connect()
+	return rod.New().ControlURL(url).Connect()
 }
 
 func hour() int {
