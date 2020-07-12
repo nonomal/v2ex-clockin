@@ -79,15 +79,13 @@ func clockIn() {
 
 	page := browser.Timeout(time.Minute).Page("https://www.v2ex.com/mission/daily")
 
-	err := kit.Try(func() {
-		wait := page.WaitRequestIdle()
-		page.Element("[value='领取 X 铜币']").Click()
-		wait()
-	})
-	if err != nil {
-		kit.Log("已经签过到了")
-	} else {
+	el := page.ElementMatches("input", "领取 X 铜币", "span", "每日登录奖励已领取")
+
+	if el.Matches("input") {
+		el.Click()
 		kit.Log("签到成功")
+	} else {
+		kit.Log("已经签过到了")
 	}
 }
 
