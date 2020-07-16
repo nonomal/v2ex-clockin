@@ -83,6 +83,7 @@ func clockIn() {
 
 	if el.Matches("input") {
 		el.Click()
+		page.ElementMatches(".message", "已成功领取每日登录奖励")
 		kit.Log("签到成功")
 	} else {
 		kit.Log("已经签过到了")
