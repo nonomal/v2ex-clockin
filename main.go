@@ -77,17 +77,19 @@ func clockIn() {
 	browser := newBrowser(true)
 	defer browser.Close()
 
-	page := browser.Timeout(time.Minute).Page("https://www.v2ex.com/mission/daily")
+	page := browser.Timeout(time.Minute).Page("https://www.v2ex.com/")
 
-	el := page.ElementMatches("input", "领取 X 铜币", "span", "每日登录奖励已领取")
+	el := page.Element(`[href="/mission/daily"]`, `.balance_area`)
 
-	if el.Matches("input") {
-		el.Click()
-		page.ElementMatches(".message", "已成功领取每日登录奖励")
-		kit.Log("签到成功")
-	} else {
+	if el.Matches(`.balance_area`) {
 		kit.Log("已经签过到了")
+		return
 	}
+	el.Click()
+
+	page.ElementMatches("input", "领取 X 铜币").Click()
+	page.ElementMatches(".message", "已成功领取每日登录奖励")
+	kit.Log("签到成功")
 }
 
 func isLoggedIn() bool {
