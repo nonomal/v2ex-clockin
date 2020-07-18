@@ -2,13 +2,13 @@ package main
 
 import (
 	"flag"
+	"log"
 	"sync"
 	"time"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/robfig/cron/v3"
-	"github.com/ysmood/kit"
 )
 
 var clockInConf = flag.String("clockin", "0 12 * * *", "cron 语法的定时签到")
@@ -36,9 +36,12 @@ func main() {
 		clockIn()
 
 		scheduler := cron.New()
-		kit.E(scheduler.AddFunc(*clockInConf, func() {
+		_, err := scheduler.AddFunc(*clockInConf, func() {
 			clockIn()
-		}))
+		})
+		if err != nil {
+			log.Fatal(err)
+		}
 		scheduler.Run()
 	}
 }
@@ -54,16 +57,16 @@ func stickyTopic() {
 	browser := newBrowser(true).Timeout(30 * time.Second)
 	defer browser.Close()
 
-	page := browser.Page(*topic)
+	page := browser.MustPage(*topic)
 	page.Element(".box")
 
 	wait := page.HandleDialog(true, "")
-	go page.ElementMatches(".box .fr a", "置顶 10 分钟").Click()
+	go page.MustElementR(".box .fr a", "置顶 10 分钟").MustClick()
 	wait()
 
-	page.WaitRequestIdle()()
+	page.MustWaitRequestIdle()()
 
-	kit.Log("置顶了", *topic)
+	log.Println("置顶了", *topic)
 }
 
 func clockIn() {
@@ -77,19 +80,19 @@ func clockIn() {
 	browser := newBrowser(true)
 	defer browser.Close()
 
-	page := browser.Timeout(time.Minute).Page("https://www.v2ex.com/")
+	page := browser.Timeout(time.Minute).MustPage("https://www.v2ex.com/")
 
-	el := page.Element(`[href="/mission/daily"]`, `.balance_area`)
-
-	if el.Matches(`.balance_area`) {
-		kit.Log("已经签过到了")
+	el := page.MustElement(`[href="/mission/daily"]`, `.balance_area`)
+	if el.MustMatches(`.balance_area`) {
+		log.Println("已经签过到了")
 		return
 	}
-	el.Click()
 
-	page.ElementMatches("input", "领取 X 铜币").Click()
-	page.ElementMatches(".message", "已成功领取每日登录奖励")
-	kit.Log("签到成功")
+	el.MustClick()
+
+	page.MustElementR("input", "领取 X 铜币").MustClick()
+	page.MustElementR(".message", "已成功领取每日登录奖励")
+	log.Println("签到成功")
 }
 
 func isLoggedIn() bool {
@@ -99,7 +102,7 @@ func isLoggedIn() bool {
 	browser := newBrowser(true)
 	defer browser.Close()
 
-	return browser.Page("https://www.v2ex.com/signin").WaitLoad().HasMatches("a", "登出|Sign Out")
+	return browser.MustPage("https://www.v2ex.com/signin").MustWaitLoad().MustHasR("a", "登出|Sign Out")
 }
 
 func login() {
@@ -109,12 +112,12 @@ func login() {
 	browser := newBrowser(false)
 	defer browser.Close()
 
-	browser.Page("https://www.v2ex.com/signin").ElementMatches("a", "登出|Sign Out")
+	browser.MustPage("https://www.v2ex.com/signin").MustElementR("a", "登出|Sign Out")
 }
 
 func newBrowser(headless bool) *rod.Browser {
-	url := launcher.New().Headless(headless).UserDataDir("tmp/user").Launch()
-	return rod.New().ControlURL(url).Connect()
+	url := launcher.New().Headless(headless).UserDataDir("tmp/user").MustLaunch()
+	return rod.New().ControlURL(url).MustConnect()
 }
 
 func hour() int {
