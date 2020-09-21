@@ -60,11 +60,10 @@ func stickyTopic() {
 	page := browser.MustPage(*topic)
 	page.Element(".box")
 
-	wait := page.HandleDialog(true, "")
-	go page.MustElementR(".box .fr a", "置顶 10 分钟").MustClick()
+	go page.HandleDialog(true, "")()
+	wait := page.MustWaitRequestIdle()
+	page.MustElementR(".box .fr a", "置顶 10 分钟").MustClick()
 	wait()
-
-	page.MustWaitRequestIdle()()
 
 	log.Println("置顶了", *topic)
 }
