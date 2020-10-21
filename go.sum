@@ -1,5 +1,5 @@
-github.com/go-rod/rod v0.74.0 h1:p9fIjYXB/WwFPBYDr942sQdLg/0CkpepWPawWBX6Ydc=
-github.com/go-rod/rod v0.74.0/go.mod h1:FnR76m5OK+UxLwwiSnXbWB1+MjlRXU8q6la59FH9UsA=
+github.com/go-rod/rod v0.74.2 h1:XKLjoxQsdi+ZJi7WddJ5meV672I1JmVqprmRrMIs98o=
+github.com/go-rod/rod v0.74.2/go.mod h1:FnR76m5OK+UxLwwiSnXbWB1+MjlRXU8q6la59FH9UsA=
 github.com/gorilla/websocket v1.4.2 h1:+/TMaTYc4QFitKJxsQ7Yye35DkWvkdLcvGKqM+x0Ufc=
 github.com/gorilla/websocket v1.4.2/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/robfig/cron/v3 v3.0.1 h1:WdRxkvbJztn8LMz/QEvLN5sBU+xKpSqwwUO1Pjr4qDs=
