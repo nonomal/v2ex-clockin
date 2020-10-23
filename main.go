@@ -58,9 +58,9 @@ func stickyTopic() {
 	defer browser.Close()
 
 	page := browser.MustPage(*topic)
-	page.Element(".box")
+	page.MustElement(".box")
 
-	go page.HandleDialog(true, "")()
+	go page.MustHandleDialog(true, "")()
 	wait := page.MustWaitRequestIdle()
 	page.MustElementR(".box .fr a", "置顶 10 分钟").MustClick()
 	wait()
@@ -79,19 +79,17 @@ func clockIn() {
 	browser := newBrowser(true)
 	defer browser.Close()
 
-	page := browser.Timeout(time.Minute).MustPage("https://www.v2ex.com/")
+	page := browser.Timeout(time.Minute).MustPage("https://www.v2ex.com/").MustWaitLoad()
 
-	el := page.MustElement(`[href="/mission/daily"]`, `.balance_area`)
-	if el.MustMatches(`.balance_area`) {
+	page.Race().ElementR("a", `领取今日的登录奖励`).MustHandle(func(el *rod.Element) {
+		el.MustClick()
+
+		page.MustElementR("input", "领取 X 铜币").MustClick()
+		page.MustElementR(".message", "已成功领取每日登录奖励")
+		log.Println("签到成功")
+	}).Element(`.balance_area`).MustHandle(func(el *rod.Element) {
 		log.Println("已经签过到了")
-		return
-	}
-
-	el.MustClick()
-
-	page.MustElementR("input", "领取 X 铜币").MustClick()
-	page.MustElementR(".message", "已成功领取每日登录奖励")
-	log.Println("签到成功")
+	}).MustDo()
 }
 
 func isLoggedIn() bool {
